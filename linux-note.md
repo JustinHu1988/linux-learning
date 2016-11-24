@@ -70,3 +70,15 @@ FHS建议所有软件开发者应该将他们的数据合理的分别放置到�
 - /usr/sbin/：非必需系统命令。例如某些网络服务器软件的服务命令。
 - /usr/share/：放置共享文件。这个目录下的数据几乎不分硬件架构均可读取（基本都是文本文件）。此目录下常见子目录：/usr/share/man（在线帮助文件），/usr/share/doc（软件文件说明），/usr/share/zoneinfo（时区文件）
 - /usr/src/：一般源码放置于此。内核源码则建议放在/usr/src/linux/目录下。
+
+
+#### /var
+/var 目录主要针对常态性变动的文件，包括缓存（cache）、登录文件（logfile）以及某些软件运行所产生的文件，包括程序文件（lock file，run file），或者例如MySQL数据库的文件等。常见子目录：
+
+- /var/cache/
+- /var/lib/
+- /var/lock/
+- /var/log/
+- /var/mail/
+- /var/run/
+- /var/spool/
