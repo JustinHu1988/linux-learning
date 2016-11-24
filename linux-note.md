@@ -15,6 +15,6 @@ linux文件的扩展名只展示文件可能的用途。
 
 ##linux目录配置
 ###linux目录配置标准
-||可分享的|不可分享的
-|- 不变的（static）|/usr|/etc
-|- 可变的（variable）|/opt|/boot
+|  | 可分享的 | 不可分享的 |
+| - 不变的（static） | /usr | /etc |
+| - 可变的（variable） | /opt | /boot |
