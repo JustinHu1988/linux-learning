@@ -37,7 +37,33 @@ Some cd shortcuts:
 - file - Determine file type
 - less - View file contents
 
+As we explore the system it will be useful to know what files contain. To do this we will use the file command to determine a file's type. Filenames in Linux are not required to reflect a file's content. While a filename like "picture.jpg" would normally be expected to contain a JPEG compressed image, it is not required to in Linux. We can invoke the file command this way:
 
+    file filename
+    
+When invoked, the file command will print a brief description of the file's contents.
+
+There are many kinds of files. In fact, one of the common ideas in Unix-like operating systems such as Linux is that "everything is a file".
+
+While many of the files on your system are familiar, for example MP3 and JPEG, there are many kinds that are a little less obvious and a few that are quite strange.
+
+**less**
+
+The less command is program to view text files. Throughout our Linux system, there are many files that contain human-readable text. The less program provides a convenient way to examine them.
+
+>What Is "Text"
+There are many ways to represent information on a computer. All methods involve defining a relationship between the information and some numbers that will be used to represent it.
+Some of these representation systems are very complex (such as compressed video files), while others are rather simple. One of the earliest and simplest is called ASCII text.
+Text is a simple one-to-one mapping of characters to numbers. It is very compact. It is important to understand that text only contains a simple mapping of characters to numbers.
+Plain ASCII text files contain only the characters themselves and a few rudimentary control codes like tabs, carriage returns and line feeds.
+Throughout a Linux system, many files are stored in text format and there are many Linux tools that work with text files.
+
+Why would we want to examine text files? Because many of the files that contain system settings(called configuration files) are stored in this format, and being able to read them gives us insight about how the system works. In addition, many of the actual programs that the system uses (called scripts) are stored iin this format.
+
+The less command is used like this:
+
+    less filename
+    
 
 
 ### linux文件扩展名
