@@ -142,10 +142,92 @@ to copy the single file or directory "item1" to file or directory "item2", and:
 
 to copy multiple items (either files or directories) into a directory.
 
+#### cp Options
 
+- -a, --archive
+- -i, --interactive
+- -r, --recursive
+- -u, --update
+- -v, --verbose
 
-     
+#### cp Examples
+
+    cp file1 file2
+Copy file1 to file2. If file2 exists, it is overwritten with the contents of file1. If file2 does not exist, it is created.
+
+    cp -i file1 file2
+Same as above, except that if file2 exists, the user is prompted before it is overwritten.
+
+    cp file1 file2 dir1
+Copy file1 and file2 into directory dir1. dir1 must already exist.
+
+    cp dir1/* dir2
+Using a wildcard, all the files in dir1 are copied into dir2. dir2 must already exist.
+
+    cp -r dir1 dir2
+Copy the contents of directory dir1 to directory dir2. If directory dir2 does not exist, it is created and after the copy, will contain the same contents as directory dir1. If directory dir2 does exist, then directory dir1 (and its contents) will be copied into dir2.
+
+### mv - 移动和重命名文件
+The mv command performs both file moving and file renaming, depending on how it is used. In either case, the original filename no longer exists after the operation. 
+mv is used in much the same way as cp:
+
+    mv item1 item2
     
+to move or rename file or directory "item1" to "item2" or:
+
+    mv item... directory
+
+to move one or more items from one directory to another.
+
+
+mv shares many of the name options as cp:
+
+- -i --interactive
+- -u --update
+- -v --verbose
+
+#### mv Examples
+
+    mv file1 file2
+Move file1 to file2. If file2 exists, it is overwritten with the contents of files. If file2 does not exist, it is created. In either case, file1 ceases to exist.
+
+    mv -i file1 file2
+Same as above, except that if file2 exists, the user is prompted before it is overwritten.
+
+    mv file1 file2 dir1
+Move file1 and file2 into directory dir1. dir1 nust already exist.
+
+    mv dir1 dir2
+if directory dir2 does not exist, create directory dir2 and move the contents of directory dir1 into dir2 and delete directory dir1. if directory dir2 does exist, move directory dir1 (and its contents) into directory dir2.
+
+
+### rm - 删除文件和目录
+
+    rm item...
+
+where "item" is one or more files or directories.
+
+- -i, --interactive
+- -r, --recursive
+- -f, --force
+- -v, --verbose
+
+#### rm Examples
+
+    rm file1
+Delete file1 silently
+
+    rm -i file1
+Same as above, except that the user is prompted for confirmation before the deletion is performed.
+
+    rm -r file1 dir1
+Delete file1 and dir1 and its contents.
+
+    rm -rf file1 dir1
+Same as above, except that if either file1 or dir1 do not exist, rm will continue silently.
+    
+>Be Careful With rm!
+Unix-like operating systems such as Linux do not have an un delete command. Once you delete something with rm, it's gone. Linux assumes you're smart and you know what you're doing.
 
 
 ### linux文件扩展名
