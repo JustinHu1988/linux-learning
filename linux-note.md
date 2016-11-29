@@ -1,4 +1,45 @@
 
+## some simple commands
+
+- date
+- cal
+- df
+- free
+- exit
+
+switch to virtual terminal(in graphical desktop): Ctrl+Alt+F1 - Ctrl+Alt+F6
+switch (in virtual terminal): Alt+F1 - Alt+F7
+
+##file system
+
+- pwd - Print name of current working directory
+- cd - Change directory
+- ls - List directory contents
+ 
+ In general, if you do not specify a pathname to something, the working directory will be assumed.
+
+Some cd shortcuts:
+
+- cd : Changes the working directory to your home directory.
+- cd - : Changes the working directory to the previous working directory.
+- cd ~user_name : Changes the working directory to the home directory of user_name. For example, cd ~bob will change the directory to the home directory of user "bob".
+
+>Important Facts About Filenames
+- Filenames that begin with a period character are hidden.
+- Filenames and commands in Linux are case sensitive.
+- Linux has no concept of a "file extension".
+- Limit the punctuation characters in the names of files you create to period, dash, and underscore. Do not embed spaces in filenames. If you want to represent spaces between words in a filename, use underscore characters.
+
+
+## Linux System
+
+- ls - List directory contents
+- file - Determine file type
+- less - View file contents
+
+
+
+
 ### linux文件扩展名
 linux文件的扩展名只展示文件可能的用途。  
 文件是否可以执行，在于其“x”属性（但不代表一定执行成功）。  
@@ -147,10 +188,26 @@ lsb_release: print distribution-specific information
 
 
 ## 文件与目录管理
+shared drive
 ####查看：ls
 常用参数：-adlF
+
 ####复制：cp
 常用参数：-air
+
+由于cp有种种的文件属性和权限特性，所以，在复制时需要了解到：
+
+- 是否需要完整保留来源文件的信息？
+- 源文件是否为软链接文件？
+- 源文件是否为特殊的文件？
+- 源文件是否为目录？
+
 ####删除：rm
 常用参数：
+-i：删除前询问
+-f：忽略不存在的文件，不出现警告信息
+-r：递归删除，用在目录的删除，属于危险操作！！！
+
 ####移动：mv
+常用
+
