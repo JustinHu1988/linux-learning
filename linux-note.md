@@ -64,6 +64,88 @@ The less command is used like this:
 
     less filename
     
+Two kinds of links:
+
+- symbolic link
+- hard link
+
+
+##操作文件和目录
+
+- cp - Copy files and directories
+- mv - Move/rename files and directories
+- mkdir - Create directories
+- rm - Remove files and directories
+- ln - Create hard and symbolic
+
+While it is easy to perform simple file manipulations with a graphical file manager, complicated tasks can be easier with the command line programs.
+For example, how could we copy all the HTML files from one directory to another, but only copy files that do not exist in the destination directory or are newer than versions in the destination directory? Pretty hard with a file manager. Pretty easy with the command line:
+
+    cp -u *.html destination
+
+**通配符(wildcard)**
+Since the shell uses filenames so much, it provides special characters to help you rapidly specify groups of filenames. These special characters are called wildcards. Using wildcards (which is also known as globbing) allow you to select filenames based on patterns of characters. The table below lists the wildcards and what they select:
+
+- \*  Matches any characters
+- ?  Matches any single characters
+- [characters]  Matches any character that is a member of the set characters
+- [!characters]  Matches any character that is not a member of the set characters
+- [[:class:]]  Matches any character that is a member of the specified class
+
+**Commonly Used Character Classes**
+
+- [:alnum:]  Matches any alphanumeric character
+- [:alpha:]  Matches any alphabetic character
+- [:digit:]  Matches any numeral
+- [:lower:]  Matches any lowercase letter
+- [:upper:]  Matches any uppercase letter
+
+Using wildcards makes it possible to construct very sophisticated selection criteria for filenames.
+Here are some examples of patterns and what they match:
+
+- \*  All files
+- g*  All files beginning with "g"
+- b*.txt  Any file beginning with "b" followed by any characters and ending with ".txt"
+- Data???  Any file beginning with "Data" followed by exactly three characters
+- [abc]*  Any file beginning with either an "a", a "b", or a "c"
+- BACKUP.[0-9][0-9][0-9]  Any file beginning with "BACKUP." followed by exactly three numerals
+- [[:upper:]]*  Any file beginning with a uppercase letter
+- [![:digit:]]*  Any file not beginning with a numeral
+- *[[:lower:]123]  Any file ending with a lowercase letter or the numerals "1", "2", or "3"
+
+Wildcards can be used with any command that accepts filenames as arguments.
+
+>Character Ranges
+If you are comming from another Unix-like environment or have been reading some other books on this subject, you may have encountered the [A-Z] or the [a-z] character range notations. These are traditional Unix notations and worked in older versions of Linux as well. But you have to be very careful with them because they will not produce the expected results unless properly configured. For now, you should avoid using them and use character classes instead.
+
+>Wildcards Work In The GUI Too
+Wildcards are especially valuable not only because they are used so frequently on the command line, but are also supported by some graphical file managers.
+
+### mkdir - 创建目录
+
+    mkdir directory...
+    
+A note on notation: When three periods follow an argument in the description of a command(as above), it means that the argument can be repeated, thus:
+
+    mkdir dir1 dir2 dir3
+    
+would create three directories named "dir1", "dir2", "dir3".
+
+### cp - 复制文件和目录
+The cp command copies files or directories. It can be used two different ways:
+
+    cp item1 item2
+    
+to copy the single file or directory "item1" to file or directory "item2", and:
+
+    cp item... directory
+
+to copy multiple items (either files or directories) into a directory.
+
+
+
+     
+    
 
 
 ### linux文件扩展名
