@@ -275,8 +275,41 @@ The ls command has a way to reveal this information. It is invoked with the "-i"
 
 If two hard links share the same inode number, they are the same file.
 
+Symbolic links were created to overcome the two disadvantages of hard links: hard links cannot span physical devices and hard links cannot reference directories, only files. Symbolic links are a special type of file that contains a text pointer to the target file or directory.
+
+Creating symbolic links is similar to creating hard links:
+
+    ln -s file-path link-name
+
+When creating symbolic links, you can either use absolute pathnames or relative pathnames, as we did in out earlier example. Using relative pathnames is more desirable because it allows a directory containing symbolic links to be renamed and/or moved without breaking the links.
+
+In addition to regular files, symbolic links can also reference directories.
+
+One thing to remember about symbolic links is that most file operations are carried out on the link's target, not the link itself. rm is an exception. When you delete a link, it is the link that is deleted, not the target.
 
 
+##Working With Commands
+
+- type - Indicate how a command name is interpreted
+- which - Display which executable program will be executed
+- man - Display a command's manual page
+- apropos - Display a list of appropriate commands
+- info - Display a command's info entry
+- whatis - Display a very brief description of a command
+- alias - Creat an alias for a command
+
+### What are "commands"?
+A command can be one of four different things:
+
+1. An executable program like all those files we saw in /usr/bin. Within this category, programs can be compiled binaries such as programs written in C and C++, or programs written in scripting languages such as the shell, perl, python, ruby, etc.
+2. A command built into the shell itself. bash supports a number of commands internally called shell builtins. The cd command, for example, is a shell builtin.
+3. A shell function. These are miniature shell scripts incorporated into the environment. We will cover configuring the environment and writing shell functions in later chapters, but for now, just be aware that they exist.
+4. An alias. Commands that we can define ourselves, built from other commands.
+
+### Identifying Commands
+It is often useful to know exactly which of the four kinds of commands is being used and Linux provides a couple of ways to find out.
+
+#### type
 
 
 
