@@ -226,8 +226,59 @@ Delete file1 and dir1 and its contents.
     rm -rf file1 dir1
 Same as above, except that if either file1 or dir1 do not exist, rm will continue silently.
     
+    
 >Be Careful With rm!
 Unix-like operating systems such as Linux do not have an un delete command. Once you delete something with rm, it's gone. Linux assumes you're smart and you know what you're doing.
+Be particularly careful with wildcards. Consider this classic example. Let's say you want to delete just the HTML files in a directory. To do this, you type:
+
+    rm *.html
+
+which is correct, but if you accidentally place a space between the "*" and the ".html" like so:
+
+    rm * .html
+
+the rm command will delete all the files in the directory and then complain that there is no file called ".html".
+
+**Here is a useful tip.** Whenever you use wildcards with rm (besides carefully checking your typing!), test the wildcard first with ls. This will let you see the files that will be deleted. Then press the up arrow key to recall the command and replace the ls with rm.
+
+
+### ln - 创建链接
+
+The ln command is used to create hard or symbolic links. It is used in one of two ways:
+
+    ln file link
+to create a hard link, and :
+
+    ln -s item link
+to create a symbolic link where "item" is either a file or a directory.
+
+#### Hard link
+Hard links are the original Unix way of creating links, compared to symbolic links, which are more modern. By default, every file has a single hard link that gives the file its name. When we create a hard link, we create an additional directory entry for a file. Hard links have two improtant limitations:
+
+1. A hard link cannot reference a file outside its own file system. This means a link may not reference a file that is not on the same disk partition as the link itself.
+2. A hard link may not reference a directory.
+
+A hard link is indistinguishable from the file itself. Unlike a symbolic link, when you list a directory containing a hard link you will see no special indication of the link. When a hard link is deleted, the link is removed but the contents of the file itself continue to exist (that is, its space is not deallocated) until all links to the file are deleted. It is important to be aware of hard links because you might encounter them from time to time, but modern practice prefers symbolic links, which we will cover next.
+
+#### Symbolic link
+Symbolic links were created to overcome the limitations of hard links. Symbolic links work by creating a special type of file that contains a text pointer to the referenced file or directory. In this regard, they operate in much the same way as a Windows shortcut though of course, they perdate the Windows feature by many years;-)
+
+A file pointed to by a symbolic link, and the symbolic link itself are largely indistinguishable from one another. For example, if you write something to the symbolic link, the referenced file is also written to. However, when you delete a symbolic link, only the link is deleted, not the file itself. If the file is deleted before the symbolic link, the link will continue to exist, but will point to nothing. In this case, the link is said to be broken. In many implementations, the ls command will display broken links in a distinguishing color, such as red, to reveal their presence.
+
+
+**How to know two hard links point to the same file**
+When thinking about hard links, it is helpful to imagine that files are made up of two parts: the data part containing the file's contents and the name parts that all refer to the same data part. The system assigns a chain of disk blocks to what is called an inode, which is then associated with the name part. Each hard link therefore refers to a specific inode containing the file's contents.
+
+The ls command has a way to reveal this information. It is invoked with the "-i" option:
+    
+    ls -li
+
+If two hard links share the same inode number, they are the same file.
+
+
+
+
+
 
 
 ### linux文件扩展名
