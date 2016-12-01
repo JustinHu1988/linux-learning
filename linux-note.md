@@ -310,8 +310,96 @@ A command can be one of four different things:
 It is often useful to know exactly which of the four kinds of commands is being used and Linux provides a couple of ways to find out.
 
 #### type
+The type command is a shell builtin that display the kind of command the shell will execute, given a particular command name. It works like this:
 
+    type command-name
 
+####  which
+Sometimes there is more than one version of an executable program installed on a system. While this is not very common on desktop systems, it's not unusual on large servers. To determine the exact location of a given executable, the which command is used:
+
+    which ls
+    -> /bin/ls
+
+which only works for executable programs, not builtins nor aliases(aliases maybe ok?) that are substitutes for actual executable programs. When we try to use which on a shell builtin, for example, cd, we either get no response or an error message.
+
+#### help
+bash has a built-in help facility available for each of the shell builtins. To use it, type "help" followed by the name of the shell builtin. For example:
+
+    help cd
+
+#### --help
+Many executable programs support a "--help" option that displays a description of the command's supported syntax and options. For example:
+
+    mkdir --help
+
+Some programs don't support the "--help" option, but try it anyway. Often it results in an error message that will reveal the same usage information.
+
+#### man
+Most executable programs intended for command line use provide a formal piece of documentation called a manual or man page. A special paging program called man is used to view them. It is used like this:
+
+    man program-name
+    
+Man pages vary somewhat in format but generally contain a title, a synopsis of the command's syntax, a description of the command's purpose, and a listing and description of each of the command's options. Man pages, however, do not usually include examples, and are intended as a reference, not a tutorial.
+
+On most Linux systems, man uses less to display the manual page, so all of the familiar less commands work while displaying the page.
+
+The "manual" that man displays is broken into sections and not only covers user commands but also system administration commands, programing interfaces, file formats and more.
+
+**Man Page Organization**
+
+1. User commands
+2. Programming interfaces kernel system calls
+3. Programming interfaces to the C library
+4. Special files such as device nodes and drivers
+5. File formats
+6. Games and amusements such as screen savers
+7. Miscellaneous
+8. System administration commands
+
+Sometimes we need to look in a specific section of the manual to find what we are looking for. This is particularly true if we are looking for a file format that is also the name of a command.
+Without specifying a section number, we will always get the first instance of a match, probably in section 1. To specify a section number, we use man like this:
+
+    man section_number search_term
+
+#### apropos 
+It is also possible to search the list of man pages for possible matches based on a search term. It's very crude but sometimes helpful.
+Here is an example of a search for man pages using search term "floppy":
+
+    apropos floppy
+
+The first field in each line of output is the name of the man page, the second field shows the section.
+Note that the man command with the "-k" option performs the exact same function as apropos.
+
+#### whatis
+The whatis program displays the name and a one line description of a man page matching a specified keyword:
+
+>The Most Brutal Man Page Of Them All
+As we have seen, the manual pages supplied with Linux and other Unix-like systems are intended as reference documentation and not as tutorials. Many man pages are hard to read, but I think that the grand prize for difficulty has got to go to the man page for bash. It is very accurate and concise, as well as being extremely complete. So check it out if you dare and look forward to the day when you can read it and it all makes sense.
+
+#### info
+The GNU Project provides an alternative to man pages for their programs, called "info".
+Info pages are hyperlinked much like web pages.
+
+    info program_name
+
+The info program reads info files, which are tree structured into individual nodes, each containing a single topic. Info files contain hyperlinks that can move you from node to node. A hyperlink can be identified by its leading asterisk, and is activated by placing the cursor upon it and pressing the enter key.
+
+To invoke info, type "info" followed optionally by the name of a program.Below is a table of commands used to control the reader while displaying an info page:
+
+- ? - Display command help
+- PgUp or Backspace
+- PgDn or Space
+- n - Display the next node
+- p - Display the previous node
+- u - Display the parent node of the currently displayed node, usually a menu.
+- Enter - Follow the hyperlink at the cursor location
+- q - Quit
+
+Most of the command line programs we have discussed so far are part of the GNU Project's "coreutils" package, so typing:
+
+    info coreutils
+
+will display a menu page with hyperlinks to each program contained in the coreutils package.
 
 
 ### linux文件扩展名
