@@ -401,6 +401,264 @@ Most of the command line programs we have discussed so far are part of the GNU P
 
 will display a menu page with hyperlinks to each program contained in the coreutils package.
 
+#### README and other documantation
+Many software packages installed on your system have documentation files residingin the /usr/share/doc directory. Most of these are stored in plain text format and can be viewed with less. Some of the files are in HTML format and can be viewed with a web browser. We may encounter some files ending with a ".gz" extension. This indicates that they have been compressed with the gzip compression program. The gzip package includes a special version of less called zless that will display the contents of gzip-compressed text files.
+
+
+#### USE alias
+>Trick: It's possible to put more than on command on a line by separating each command with a semicolon character.
+
+    command1; command2; command3...
+    
+For example:
+
+    cd /usr; ls; cd -
+   
+First we change directory to /usr then list the directory and finally return to the original directory(by using "cd -").
+
+Now let's turn this sequence into a new command using alias. The first thing we have to do is dream up a name for our new command. Let's try "test". Before we do that, it would be a good idea to find out if the name "test" is already being used. To find out, we can use the type command:
+
+    type test
+    -> test is a shell builtin
+    
+The name "test" is already taken. Let's try "foo":
+
+    type foo
+    -> bash: type: foo: not found
+    
+"foo" is not taken. So let's create our alias:
+
+    alias foo='cd /usr; ls; cd -'
+    
+Notice the structure of this command:
+
+    alias name='string'
+
+After the command "alias" we give alias a name followed immediately (no whitespace allowed) by an equals sign, followed immediately by a quoted string containing the meaning to be assigned to the name. After we define our alias, it can be used anywhere the shell would expect a command.
+
+We can also use the type command again to see our alias:
+    
+    type foo
+    -> foo is aliased to 'cd /usr; ls; cd -'
+   
+To remove an alias, the `unalias` command is used, like so:
+
+    unalias foo
+    
+While we purposefully avoided naming our alias with an existing command name, it is not uncommon to do so. This is often done to apply a commonly desired option to each invocation of a common command. For instance, we saw earlier how the ls command is often aliased to add color support:
+
+    type ls
+    -> ls is aliased to 'ls --color=tty'
+    
+To see all the aliases defined in the environment, use the alias command without arguments.
+
+There is one problem with defining aliases on the command line. They vanish when your shell session ends. In a later chapter, we will see how to add our own aliases to the files that establish the environment each time we log on.
+
+
+
+## I/O redirection
+
+The "I/O" stands for input/output and with this facility you can redirect the input and output of commands to and from files, as well as connect multiple commands together into powerful command pipelines.
+
+To show off this facility, we will introduce the following commands:
+
+- cat - Concatenate files
+- sort - sort lines of text
+- uniq - Report or omit repeated lines
+- grep - Print lines matching a pattern
+- wc - Print newline, word, and byte counts for each file
+- head - Output the first part of a file
+- tail - Output the last part of a file
+- tee - Read from standard input and write to standard output and files
+
+###Standard input, Standard output, Standard error
+
+Many of the programs that we have used so far produce output of some kind. This output often consists of two types. First, we have the program's results; that is, the data the program is designed to produce, and second, we have status and error messages that tell us how the program is getting along. If we look at a command like ls, we can see that it displays its results and its error messages on the screen.
+
+Keeping with the Unix theme of "everything is a file", programs such as ls actually send their results to a special file called standard output (often expressed as stdout) and their status messages to another file called standard error (stderr). By default, both standard output and standard error are linked to the screen and not saved into a disk file. In addition, many programs take input from a facility called standard input(stdin) which is, by default, attached to the keyboard.
+
+I/O redirection allows us to change where output goes and where input comes from. Normally, output goes to the screen and input comes from the keyboard, but with I/O redirection, we can change that.
+
+### Redefine standard output
+
+I/O redirection allows us to redefine where standard output goes. To redirect standard output to another file besides the screen, we use the ">" redirection operator followed by the name of the file.
+It's often useful to store the output of a command in a file. For example, we could tell the shell to send the output of the ls command to the file ls-output.txt instead of the screen:
+
+    ls -l /usr/bin > ls-output.txt
+
+Here, we created a long listing of the /usr/bin directory and sent the results to the file ls-output.txt. Let's examine the redirected output of the command:
+
+    ls -l ls-output.txt
+    
+If we look at the file with less, we will see that the file ls-output.txt does indeed contain the results from our ls command:
+
+    less ls-output.txt
+
+Now, let's repeat out redirection test, but this time with a twist. We'll change the name of the directory to one that does not exist:
+
+    ls -l /bin/usr > ls-output.txt
+    -> ls: cannot access /bin/usr: No such file or directory
+    
+We received an error message. This makes sense since we specified the non-existent directory /bin/usr, but why was the error message displayed on the screen rather than being redirected to the file ls-output.txt? 
+The answer is that the ls program does not send its error messages to standard output. Instead, like most well-writen Unix programs, it sends its error messages to standard error, the error message was still sent to the screen. 
+
+We'll see how to redirect standard error in just a minute, but first, let's look at what happened to our output file:
+
+    ls -l ls-output.txt
+
+The file now has zero length! This is because, when we redirect output with the ">" redirection operator, the destination file is always rewritten from the beginning. Since our ls command generated no results and only an error message, the redirection operation started to rewrite the file and then stopped because of the error, resulting in its truncation. In fact, if we ever need to actually truncate a file(or create a new, empty file) we can use a trick like this:
+ 
+    > ls-output.txt
+
+Simply using the redirection operator with no command preceding it will truncate an existing file or create a new, empty file.
+
+So, how can we append redirected output to a file instead of overwriting the file from the beginning?
+For that, we use the ">>" redirection operator, like so:
+
+    ls -l /usr/bin >> ls-output.txt
+    ls -l /usr/bin >> ls-output.txt
+    
+
+### Redirecting standard error
+Redirecting standard error lacks the ease of a dedicated redirection operator.
+ To redirect standard error we must refer to its file descriptor. 
+ A program can produce output on any of several numbered file streams. While we have referred to the first three of these dile steams as standard input, output and error, the shell references them internally as file descriptors zero, one, and two, respectively. The shell provides a notation for redirecting files using the file descriptor number. Since standard error is the same as file descriptor number two, we can redirect standard error with this notation.
+ 
+    ls -l /bin/usr 2> ls-error.txt
+    
+The file descriptor "2" is placed immediately before the redirection operator to perform the redirection of standard error to the file ls-error.txt.
+
+
+### Redirecting Standard output and standard error to the same file
+There are cases in which we may wish to capture all of the output of a command to a single file. To do this, we must redirect both standard output and standard error at the same time.
+
+    ls -l /bin/usr > ls-output.txt 2>&1
+    
+ Using this method, we perform two redirections. First we redirect standard output to the file ls-output.txt and then we redirect file descriptor two (standard error) to file descriptor on (standard output) using the notation 2>&1.
+   
+ Notice that the order of the redirections  is significant. The redirection of standard error must always occur after redirecting standard output or it doesn't work. 
+ 
+ Recent versions of bash provide a second, more streamlined method for performing this combined redirection:
+ 
+    ls -l /bin/usr &> ls-output.txt
+    
+In this example, we use the simple notation &> to redirect both standard output and standard error to the file ls-output.txt.
+
+
+
+Sometimes "silence is golden", and we don't want output from a command, we just want to throw it away. This applies particularly to error and status messages. The system provides a way to do this by redirecting output to a special file called "/dev/null". This file is a system device called a bit bucket which accepts input and does nothing with it. To suppress error messages from a command, we do this:
+
+    ls -l /bin/usr 2> /dev/null
+    
+>/dev/null in Unix Culture
+The bit bucket in an ancient Unix concept and due to its universality, has appeared in many parts of Unix culture. When someone says he/she is sending your comments to /dev/null, now you know what it means.
+
+
+### Redirecting standard input
+Up to now, we haven't encountered any commands that make use of standard input(acturally we have, but we'll reveal that surprise a little bit later), so we need to introduce one.
+
+### cat
+The cat command reads one or more files and copies them to standard output like so:
+    
+    cat [file]
+
+In most cases, you can think of cat as being analogous to the TYPE command in DOS. You can use it to display files without paging, for example:
+
+    cat ls-output.txt
+
+will display the contents of the file ls-output.txt. cat is often used to display short text files. Since cat can accept can accept more than one file as an argument, it can also be used to join files together. Say we have downloaded a large file that has been split into multiple parts (multimedia files are often split this way on USENET), and we want to join them back together. If the files were named:
+movie.mpeg.001 movie.mpeg.002 ... movie.mpeg.009
+
+we could join them back together with this command:
+
+    cat movie.mpeg.0* > movie.mpeg
+
+Since wildcards always expand in sorted order, the arguments will be arranged in the correct order.
+
+This is all well and good, but what does this have to do with standard input? Nothing yet, but let's try something else. What happens if we type "cat" with no arguments:
+
+    cat
+    
+Nothing happens, it just sits there like it's hung. It may seem that way, but it's really doing exactly what it's supposed to.
+
+**If cat is not given any arguments, it reads from standard input and since standard input is by default, attached to the keyboard**, it's waiting for us to type something! Try this:
+
+    cat
+    The quick brown fox jumped over the lazy dog.
+    
+Next, type a Ctrl-d (i.e., hold down the Ctrl key and press "d") to tell cat that it has reached end of file(EOF) on standard input:
+
+    cat
+    The quick brown fox jumped over the lazy dog.
+    The quick brown fox jumped over the lazy dog.
+    
+In the absence of filename arguments, cat copies standard input to standard output, so we see our line of text repeated. We can use this behavior to create short text files.
+
+Let's say that we wanted to create a file called "lazy_dog.txt" containing the text in our example.
+
+    cat > lazy_dog.txt
+    The quick brown fox jumped over the lazy dog.
+    
+Type the command followed by the text we want in to place in the file. Remember to type Ctrl-d at the end. 
+**Using the command line, we have implemented the world's dumbest word processor!**
+To see our results, we can use cat to copy the file to stdout again.
+
+
+Now that we know how cat accepts standard input, in addition to filename arguments, let's try redirecting standard input:
+ 
+    cat < lazy_dog.txt
+    The quick brown fox jumped over the lazy dog.
+
+Using the "<" redirection operator, we change the source of standard input from the keyboard to the file lazy_dog.txt. We see that the result is the same as passing a single filename argument. This is not particularly useful compared to passing a filename argument, but is serves to demonstrate using a file as a source of standard input. Other commands make better use of standard input.
+
+Before we move on, check out the man page for cat, as it has several interesting options.
+
+### Pipeline
+The ability of commands to read data from standard input and send to standard output is utilized by a shell feature called pipelines. Using the pipe operator "|" (vertical bar), **the standard output of one command can be piped into the standard input of another**:
+
+    command1 | command2
+
+For example, `less` can accepts standard input, we can use `less` to display the output of any command that sends its results to standard output:
+
+    ls -l /usr/bin | less
+
+This will use the output of `ls -l /usr/bin` as the input of `less`, then less will display the result.
+Using this technique, we can conveniently examine the output of any command that produces standard output.
+
+### filters
+Pipelines are often used to perform complex operations on data. It is possible to put several commands together into a pipeline.
+Frequently, the commands used this way are referred to as filters.
+Filters take input, change it somehow and then output it. The first one we will try is sort. Imagine we wanted to make a combined list of all of the executable programs in /bin and /usr/bin, put them in sorted order and view it:
+
+    ls /bin /usr/bin | sort | less
+
+Since we specified two directories(/bin and /usr/bin), the output of ls would have consisted of two sorted lists, one for each directory. By including sort in our pipeline, we changed the data to produce a single, sorted list.
+
+### uniq
+The `uniq` command is often used in conjunction with sort. uniq accepts a sorted list of data from either standard input or a single filename argument (see the uniq man page for details) and, by default, removes any duplicates from the list.
+So, to make sure our list has no duplicates (that is, any programs of the same name that appear in both the /bin and /usr/bin directories) we will add uniq to our pipeline:
+
+    ls /bin /usr/bin | sort | uniq | less
+
+If we want to see the list of duplicates instead, we add the "-d" option to uniq like so:
+
+    ls /bin /usr/bin | sort | uniq -d | less
+
+### wc - word count
+The `wc` command is used to display the number of lines, words and bytes contained in files. For example:
+
+    wc ls-output.txt
+    -> 7902 64566 503634 ls-output.txt
+ 
+In this case it prints out three numbers: lines, words, and bytes contained in ls-output.txt. Like our previous commands, if executed  without command line arguments, wc accepts standard input. The "-l" option limits its output to only report lines. Adding it to a pipeline is a handy way to count things. 
+To see the number of programs we have in our sorted list, we can do this:
+    
+    ls /bin /usr/bin | sort | uniq | wc -l
+
+
+    
+
+
 
 ### linux文件扩展名
 linux文件的扩展名只展示文件可能的用途。  
