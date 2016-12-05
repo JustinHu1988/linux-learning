@@ -655,7 +655,13 @@ To see the number of programs we have in our sorted list, we can do this:
     
     ls /bin /usr/bin | sort | uniq | wc -l
 
+### grep
+`grep` is a powerful program used to find text patterns within files.
+It's used like this:
 
+    grep pattern [file...]
+
+When grep encounters a "pattern" in the file, it prints out the lines containing it.
     
 
 
