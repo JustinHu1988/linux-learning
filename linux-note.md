@@ -661,8 +661,281 @@ It's used like this:
 
     grep pattern [file...]
 
-When grep encounters a "pattern" in the file, it prints out the lines containing it.
+When grep encounters a "pattern" in the file, it prints out the lines containing it. The patterns that grep can match can be very complex, but for now, we will concentrate on simple text matches.
+
+Let's say we want to find all the files in our list of programs that had the word "zip" embedded in the name. Such a search might give us an idea of some of the programs on our system that had something to do with file compression. 
+
+    ls /bin /usr/bin | sort | uniq | grep zip
+
+There are a couple of handy options for grep: "-i" which causes grep to ignore case when performing the search (normally searches are case sensitive) and "-v" which tells grep to only print lines that do not match the pattern.
+
+### head/tail
+Sometimes you may only want the first few lines or the last few lines of the output from a command. 
+The `head` command prints the first ten lines of a file, and the `tail` command prints the last ten lines. You can adjust the number of lines with the "-n" option:
+
+    head -n 5 ls-output.txt
+    -> print out the first 5 lines of the ls-output.txt
     
+    tail -n 3 ls-output.txt
+    -> print the last 3 lines of the ls-output.txt
+
+These can be used in pipelines as well:
+
+    ls /usr/bin | tail -n 5
+    -> print the first 5 lines of the ls command's output
+
+`tail` has an option which allows you to view files in real-time. This is useful for watching the progress of log files as they are being written.
+
+In the following example, we will look at the messages file in /var/log. Superuser privileges are required to do this on some Linux distributions, since the /var/log messages file may contain security information:
+
+    tail -f /var/lgo/messages
+
+Using the "-f" option, tail continues to monitor the file and when new lines are appended, they immediately appear on the display, until you type Ctrl-c.
+
+
+### tee - 从stdin读取数据，同时输出到stdout和文件
+
+The tee program reads standard input and copies it to both standard output (allowing the data to continue down the pipeline) and to one or more files. This is useful for capturing a pipeline's contents at an intermediate stage of processing.
+ For example:
+   
+    ls /usr/bin | tee ls.txt | grep zip
+    -> list the content at /usr/bin , output them to both ls.txt and standard output, use this as input for grep, and find sentence containing the keyword "zip".
+    
+
+
+As we gain Linux experience, we will see that the redirection feature of the command line is extremely useful for solving specialized problems.
+There are many commands that make use of standard input and output, and almost all command line programs use standard error to display their informative messages.
+
+
+
+## See world form shell 
+
+- echo - Display a line of text
+
+
+### Expansion
+Each time you type a command line and press the enter key, bash performs several processes upon the text before it carries out your command.
+
+We have seen a couple of cases of how a simple character sequence, for example "*", can have a lot of meaning to the shell. The process that makes this happen is called expansion.
+With expansion, you type something and it is expanded into something else before the shell acts upon it. 
+
+To demonstrate what we mean by this, let's take a look at the echo command. echo is a shell builtin that performs a very simple task. It prints out its text arguments on standard output:
+
+    echo this is a test
+    -> this is a test
+ 
+That's pretty straightforward. Any argument passed to echo gets displayed.
+Let's try another example:
+
+    echo *
+    -> Desktop Documents ls-output.txt Music Pictures Public Templates Videos
+
+
+The shell expands the "*" into something else before the echo command is executed.
+When the enter key is pressed, the shell automatically expands any qualifying characters on the command line before the command is carried out, so the echo command never saw the "*", only its expanded result. Knowing this,  we can see that echo behaved as expected.
+
+### Pathname expansion
+
+The mechanism by which wildcards work is called pathname expansion.
+
+>Pathname Expansion of Hidden Files
+As we know, filenames that begin with a period character are hidden. Pathname expansion also respects this behavior. 
+An expansion such as:
+
+    echo *
+
+does not reveal hidden files.
+what will happen if we add a period at start:
+
+    echo .*
+
+This will include hidden files, but also include directory "." and "..".
+To correctly perform pathname expansion in this situation, we have to employ a more specific pattern. This will work correctly:
+
+    echo .[!.]*
+
+### tilde character
+As you may recall from our introduction to the cd command, the tilde character("~") has a special meaning. When used at the beginning  of a word, it expands into the name of the home directory of the named user, or if no user is named, the home directory of the current user:
+
+    echo ~
+    -> /home/me
+    
+If user "foo" has an account, then:
+
+    echo ~foo
+    -> /home/foo
+
+
+
+### arithmetic expansion 
+The shell allows arithmetic to be performed by expansion.
+This allow us to use the shell prompt as a calculator:
+
+    echo $((2 + 2))
+    -> 4
+
+**Arithmetic expansion uses the form**:
+
+    $((expression))
+
+Where expression is an arithmetic expression consisting of values and arithmetic operators.
+
+Arithmetic expansion only supports integers (whole numbers, no decimals), but can perform quite a number of different operations. Here are a few of the supported operators:
+
+    + - * / % **(Exponentiation)
+
+Spaces are not significant in arithmetic expressions and expressions may be nested. For example, to multiply five squared by three:
+
+    echo $(($((5**2))*3))
+    -> 75
+    
+Single parentheses may be used to group multiple subexpressions. With this technique, we can rewrite the example above and get the same result using a simgle expansion instead of two:
+
+    echo $(((5**2)*3))
+    -> 75
+    
+Here is an example using the division and remainder operators. Notice the effect of integer division:
+
+    echo $((5/2))
+    -> 2
+    
+here **can't** get the correct answer.
+
+
+### brace expansion
+Perhaps the strangest expansion is called brace expansion. With it, you can create **multiple text strings** from a pattern containing braces.
+For example:
+
+    echo Front-{A,B,C}-Back
+    -> Front-A-Back Front-B-Back Front-C-Back
+    
+Patterns to be brace expanded may contain a leading portion called a preamble and a trailing portion called a postscript.
+The brace expression itself may contain either a comma-separated list of strings, or a range of integers or single characters. The pattern may not contain embedded whitespace.
+
+    echo Number_{1..5}
+    -> Number_1 Number_2 Number_3 Number_4 Number_5
+
+A range of letters in reverse order:
+
+    echo {Z..A}
+    -> Z Y X W V U T S R Q P O N M L K J I H G F E D C B A
+
+Brace expansions may be nested:
+
+    echo a{A{1,2},B{3,4}}b
+    -> aA1b aA2b aB3b aB4b
+
+What is this good for?
+The most common application is to make lists of files or directories to be created.
+
+For example, if we were photographers and had a large collection of images that we wanted to organize into years and months, we can do it this way:
+
+    mkdir Pics
+    cd Pics
+    mkdir {2007..2009}-0{1..9} {2007..2009}-{10..12}
+    ls
+    
+### parameter expansion
+We're only going to touch briefly on parameter expansion in this chapter, but we'll be covering it extensively later. 
+
+It's a feature that is more useful in shell script than directly on the command line. Many of its capabilities have to do with the system's ability to store small chunks of data and to give each chunk a name.
+Many such chunks, more properly called variables, are available for your examination.
+For example, the variable named "USER" contains your user name. To invoke parameter expansion and reveal the contents of USER you would do this:
+
+    echo $USER
+    ->yourusername
+    
+To see a list of available variables, try this :
+
+    printenv | less
+
+You may have noticed that with other types of expansion, if you mistype a pattern, the expansion will not take place and the echo command will simply display the mistyped pattern.
+
+
+### Command substitution
+Command substitution allows us to use the output of a command as an expansion:
+
+    echo $(commandname)
+    
+for example:
+
+    ls -l $(which cp)
+    
+Here we passed the result of `which cp` as an argument to the ls command, thereby getting the listing of  the cp program without having to know its full pathname.
+
+We are not llimited to just simple commands, entire pipelines can be used:
+
+    file $(ls /usr.bin.* | grep zip)
+    
+In this example, the results of the pipeline became the argument list of the file command.
+
+There is an alternate syntax for command substitution in older shell programs which is also supported in bash. It uses back-quotes instead of the dollar sign and parentheses:
+
+    ls -l `which cp`
+   
+    
+### Quoting
+Now we know how many ways the shell can perform expansions, it's time to learn how we can control it.
+
+For example:
+
+    echo this is a        test
+    -> this is a test
+    
+word-splitting by the shell removed extra whitespace from the echo command's list of arguments.
+
+    echo The total is $100.00
+    -> The total is 00.00
+
+parameter expansion substituted an empty string for the value of "$1" because it was an undefined variable.
+The shell provides a mechanism called quoting to selectively suppress unwanted expansions.
+
+
+#### double quote
+
+If you place text inside double quotes, all the special characters used by the shell lose their special meaning and are treated as ordinary characters.
+The exceptions are $,\(backslash),and `(back-quote).(参数展开、算数展开和命令替换依然能执行)
+
+Using double quotes, we can cope with filenames containing embedded spaces.
+
+By using double quotes, we stop the word-splitting and get the desired result; further, we can even repair the damage:
+
+    ls -l "two words.txt"
+    mv "two words.txt" two_words.txt
+    
+
+   
+Remember, parameter expansion, arithmetic expansion, and command substitution still take place within double quotes:
+
+    echo "$USER $((2+2)) $(cal)"
+
+
+We should take a moment to look at the effect of double quotes on command substitution. First let's look a little deeper at how word splitting  works. 
+
+By default, word-splitting looks for the presence of spaces, tabs, and newlines(linefeed characters) and treats them as delimiters between words. This means that unquoted spaces, tabs and newlines are not considered to be part of the text. They only serve as separators. Since they separate the words into different arguments, our example command line contains a command followed by four distinct arguments. If we add double quotes:
+
+    echo "this is a   test"
+    -> this is a   test
+
+word-splitting is suppressed and embedded spaces are not treated as delimiters, rather they become part of the argument. Once the double quotes are added, our command line contains a command followed by a single argument.
+
+
+The fact that newlines are considered delimiters by the word-splitting mechanism causes an interesting, albeit subtle, effect on command substitution.
+Consider the following:
+
+    echo $(cal)
+    February 2008 Su Mo Tu We Th Fr Sa 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29
+    echo "$(cal)"
+    February 2008
+    ....
+
+When you press the enter key, the text of input will expansion.
+In the first instance, the unquoted command substitution resulted in a command line containing thirty-eight arguments.
+In the second, a command line with one argument that includes the embedded spaces and newlines.
+
+
+#### Single quotes
+If we need to suppress all expansions, we use single quotes.
 
 
 
