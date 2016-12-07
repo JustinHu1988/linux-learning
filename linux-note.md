@@ -938,6 +938,40 @@ In the second, a command line with one argument that includes the embedded space
 If we need to suppress all expansions, we use single quotes.
 
 
+### escape character
+Sometimes we only want to quote a single character, we can precede a chracter with a backslash, which in this context is called the escape character.
+Often this is done inside double quotes to selectively prevent an expansion:
+
+    echo "The balance for user $USER is: \$5.00"
+    -> The balance for user me is: $5.00
+    
+It's also common to use escaping to eliminate the special meaning of a character in a filename. 
+Note that within single quotes, the backslash loses its special meaning and is treated as an ordinary character.
+
+>Backslash Escape Sequences
+In addition to its role as the escape character, the backslash is also used as part of a notation to represent certain special characters called **control codes**.
+The first thirty-two character in the ASCII coding scheme are used to transmit commands to teletype-like devices.
+
+- \a Bell("Alert"-causes the computer to beep)
+- \b Backspace
+- \n Newline.
+- \r Carriage return
+- \t Tab
+
+The idea behind this representation using the backslash originated in the C programming language and has been adopted by many others, including the shell.
+
+
+### interpretation of escape 
+
+Adding the "-e" option to echo will enable interpretation of escape sequences.
+
+
+
+
+
+
+
+
 
 ### linux文件扩展名
 linux文件的扩展名只展示文件可能的用途。  
