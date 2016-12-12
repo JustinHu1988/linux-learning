@@ -951,25 +951,67 @@ Note that within single quotes, the backslash loses its special meaning and is t
 >Backslash Escape Sequences
 In addition to its role as the escape character, the backslash is also used as part of a notation to represent certain special characters called **control codes**.
 The first thirty-two character in the ASCII coding scheme are used to transmit commands to teletype-like devices.
-
 - \a Bell("Alert"-causes the computer to beep)
 - \b Backspace
 - \n Newline.
 - \r Carriage return
 - \t Tab
-
 The idea behind this representation using the backslash originated in the C programming language and has been adopted by many others, including the shell.
 
 
 ### interpretation of escape 
 
-Adding the "-e" option to echo will enable interpretation of escape sequences.
+Adding the "-e" option to echo will enable interpretation of escape sequences. You may also place them inside $''.
+
+As we move forward with using the shell, we will find that expansions and quoting will be used with increasing frequency, so it makes sense to get a good understanding of the way they works.
+Without a proper understanding of expansion, the shell will always be a source of mystery and confusion, and much of it potential power wasted.
 
 
 
 
+## Keyboard
+
+In this chapter, we will look at bash features that make keyboard use faster and more efficient.
+
+- clear - Clear the screen
+- history - Display the contents of the history list
+
+### Cursor Movement Commands
+
+- Ctrl-a : Move cursor to the beginning of the line.
+- Ctrl-e : Move cursor to the end of the line.
+- Ctrl-f : Move cursor forward one character; same as the right arrow key.
+- Ctrl-b : Move cursor backward one character; same as the left arrow key.
+- Alt-f : Move cursor forward one word.
+- Alt-b : Move cursor backward one word.
+- Ctrl-l : Clear the screen and move the cursor to the top left corner. The clear command does the same thing.
+
+### Text Editing Commands
+
+- Ctrl-d : Delete the character at the cursor location
+- Ctrl-t : Transpose the character at the cursor location with the one preceding it.
+- Alt-t : Transpose the word at the cursor location with the one preceding it.
+- Alt-l : Convert the characters from the cursor location to the end of the word to lowercase.
+- Alt-u : Convert the characters from the cursor location to the end of the word to uppercase.
+
+### Cut And Paste Commands
+>The Readline documentation uses the terms killing and yanking to refer to what we would commonly call cutting and pasting.
+
+- Ctrl-k : Kill text from the cursor location to the end of line.
+- Ctrl-u : Kill text from the cursor location to the beginning of the line.
+- Alt-d : Kill text from the cursor location to the end of current word.
+- Alt-Backspace : Kill text from the cursor location to the beginning of the word. If the cursor is at the beginning of a word, kill the previous word.
+- Ctrl-y Yank text from the kill-ring and insert it at the current location.
 
 
+>The Meta Key 
+
+### completion
+Completion occurs when you press the tab key while typing a command. 
+
+completion will also work on variable (if the beginning of the word is a "$"), user names(if the word begins with "~"), commands(if the word is the first word on the line) and host names(if the beginning of the word is "@"). Host name completion only works for host names listed in /etc/hosts.
+
+There are
 
 
 
