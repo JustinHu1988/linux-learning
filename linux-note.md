@@ -894,7 +894,7 @@ The shell provides a mechanism called quoting to selectively suppress unwanted e
 #### double quote
 
 If you place text inside double quotes, all the special characters used by the shell lose their special meaning and are treated as ordinary characters.
-The exceptions are $,\(backslash),and `(back-quote).(参数展开、算数展开和命令替换依然能执行)
+The exceptions are $,\(backslash),and (back-quote).(参数展开、算数展开和命令替换依然能执行)
 
 Using double quotes, we can cope with filenames containing embedded spaces.
 
